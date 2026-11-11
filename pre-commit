@@ -1,0 +1,37 @@
+#!/bin/sh
+# Pre-commit hook: Formatter -> Linter -> Tests
+# Si cualquier paso falla, el commit se cancela.
+
+ARCHIVOS=$(git ls-files '*.java')
+
+#En la carpeta tools ejecutar el formater
+
+echo "----- 1/3 Formatter -----"
+java -jar tools/google-java-format.jar --aosp --dry-run --set-exit-if-changed $ARCHIVOS
+if [ $? -ne 0 ]; then
+    echo "ERROR: los archivos de arriba no tienen el formato correcto. Commit cancelado."
+    exit 1
+fi
+echo "Formato OK"
+
+#En la carpeta tools ejecutar el linter (estilo)
+
+echo "------ 2/3 Linter ------"
+java -jar tools/checkstyle.jar -c checkstyle.xml $ARCHIVOS
+if [ $? -ne 0 ]; then
+    echo "ERROR: el linter encontró problemas. Commit cancelado."
+    exit 1
+fi
+
+#Ejecuta el test unitario para el Metodo Mas tres estudios
+#Sigue el patrón AAA: Arrange, Act, Assert
+
+echo "-------- 3/3 Tests ---------"
+javac -encoding UTF-8 -d out $ARCHIVOS && java -cp out tests.MasTresEstudiosTest
+if [ $? -ne 0 ]; then
+    echo "ERROR: hay tests que fallan. Commit cancelado."
+    exit 1
+fi
+
+echo "--------- Pre commit : Exitoso --------"
+exit 0

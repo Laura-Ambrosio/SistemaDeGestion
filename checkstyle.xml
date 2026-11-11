@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<!-- Reglas del linter: cada una que no se cumpla es un error -->
+
+<module name="Checker">
+    <property name="severity" value="error"/>
+    <module name="TreeWalker">
+        <module name="UnusedImports"/>        <!-- imports que no se usan -->
+        <module name="UnusedLocalVariable"/>  <!-- variables declaradas y no usadas -->
+        <module name="EmptyBlock"/>           <!-- bloques vacíos, ej. catch {} -->
+        <module name="NeedBraces"/>           <!-- if/for sin llaves -->
+    </module>
+</module>
